@@ -53,6 +53,19 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model {
 
         $trustForwarded = isset($this->config['trustForwarded']) ? (bool)$this->config['trustForwarded'] : false;
 
+        $httpClientHandler = null;
+        if (isset($this->config['httpClientHandler'])) {
+            error_log('starting  : ' . $this->config['httpClientHandler']);
+            if (class_exists($this->config['httpClientHandler'], true)) {
+                error_log('class exists : ' . $this->config['httpClientHandler']);
+                $httpClientHandler = new $this->config['httpClientHandler']($this->config);
+            } else {
+                error_log('class does not exist : ' . $this->config['httpClientHandler']);
+            }
+        } else {
+            error_log('not found : ' . $this->config['httpClientHandler']);
+        }
+
         // Check if there is Graph SDK in thirdparty/Facebook.
         if (file_exists(Hybrid_Auth::$config["path_libraries"] . "Facebook/autoload.php")) {
             require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/autoload.php";
